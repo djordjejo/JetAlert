@@ -15,6 +15,8 @@ namespace JetAlert.Model
         public DateTime DepartureDate { get; set; }
         public decimal Price { get; set; }
         public string Currency { get; set; } = string.Empty;
+        public string Duration{ get; set; } = string.Empty;
+        public string Seats { get; set; }
         public string Url { get; set; } = string.Empty;
         public DateTime ScrapedAt { get; set; }
 

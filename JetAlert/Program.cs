@@ -42,7 +42,6 @@ class Program
         await RunScrapingAsync(host.Services);
     }
 
-    // DODAJ OVU METODU ISPOD Main():
     static async Task RunScrapingAsync(IServiceProvider services)
     {
         using var scope = services.CreateScope();
@@ -55,15 +54,15 @@ class Program
         {
             var routes = new[]
             {
-                ("BEG", "NYC", new DateTime(2026, 6, 15)),
-                ("BEG", "PAR", new DateTime(2026, 7, 1)),
+                ("BEG", "VIE", new DateTime(2026, 6, 15), new DateTime(2026, 6, 22),2),
+                ("BEG", "PAR", new DateTime(2026, 7, 1), new DateTime(2026, 7, 8),2),
             };
 
-            foreach (var (origin, dest, date) in routes)
+            foreach (var (origin, dest, departureDate, returnDate, adults) in routes)
             {
-                Console.WriteLine($"Scraping: {origin} → {dest} on {date:dd.MM.yyyy}");
+                Console.WriteLine($"Scraping: {origin} → {dest} on {departureDate:dd.MM.yyyy} for {adults} adults");
 
-                var flights = await scraper.ScrapeFlightsAsync(origin, dest, date);
+                var flights = await scraper.ScrapeMatrixAsync(origin, dest, departureDate, returnDate, adults);
 
                 Console.WriteLine($"Found {flights.Count} flights\n");
 
@@ -85,7 +84,7 @@ class Program
                         {
                             await notifier.SendPriceAlertAsync(flight, lastPrice, flight.Price);
 
-                            existing.PriceHistory.Add(new JetAlert.Models.PriceHistory
+                            existing.PriceHistory.Add(new PriceHistory
                             {
                                 Price = flight.Price,
                                 RecordedAt = DateTime.UtcNow
@@ -98,7 +97,7 @@ class Program
                     {
                         Console.WriteLine($"  ✓ {flight.FlightNumber}: {flight.Price:N0} {flight.Currency}");
 
-                        flight.PriceHistory.Add(new JetAlert.Models.PriceHistory
+                        flight.PriceHistory.Add(new PriceHistory
                         {
                             Price = flight.Price,
                             RecordedAt = DateTime.UtcNow

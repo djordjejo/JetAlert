@@ -24,6 +24,8 @@ namespace JetAlert.Data
                 .WithOne(ph => ph.Flight)
                 .HasForeignKey(ph => ph.FlightId);
 
+            modelBuilder.Entity<Flight>().Property(f => f.Price).HasPrecision(18, 2);
+
             modelBuilder.Entity<PriceHistory>()
             .Property(p => p.Price)
             .HasPrecision(18, 2);
